@@ -4,8 +4,6 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"io"
-	"mime/multipart"
 	"net/http"
 )
 
@@ -16,7 +14,7 @@ type Hook struct {
 	uri    string
 }
 
-// New returns a new hook with the designated URL.
+// New returns a new hook with the designated URI.
 func New(uri string) *Hook {
 	return &Hook{
 		uri:    uri,
@@ -29,47 +27,27 @@ func (h *Hook) Client() *http.Client {
 	return h.client
 }
 
+// URI returns the URI of the hook.
+func (h *Hook) URI() string {
+	return h.uri
+}
+
 // Send sends the webhook provided to the hook.
 func (h *Hook) Send(webhook Webhook) error {
-	var buf bytes.Buffer
-	err := json.NewEncoder(&buf).Encode(webhook)
+	enc, err := json.Marshal(webhook)
 	if err != nil {
-		return fmt.Errorf("error encoding the webhook: %w", err)
+		return fmt.Errorf("hook send: %w", err)
 	}
 
-	req, err := http.NewRequest(http.MethodPost, h.uri, nil)
+	req, err := http.NewRequest(http.MethodPost, h.uri, bytes.NewReader(enc))
 	if err != nil {
-		return fmt.Errorf("error while building a webhook request: %w", err)
+		return fmt.Errorf("hook send: %w", err)
 	}
-
-	if len(webhook.Files) < 1 {
-		req.Header.Add("Content-Type", "application/json")
-		req.Body = io.NopCloser(&buf)
-	} else {
-		var body bytes.Buffer
-		mw := multipart.NewWriter(&body)
-		_ = mw.WriteField("payload_json", buf.String())
-
-		for i, f := range webhook.Files {
-			w, err := mw.CreateFormFile(fmt.Sprintf("file%d", i), f.Filename)
-			if err != nil {
-				return err
-			}
-
-			if _, err = io.Copy(w, f.Body); err != nil {
-				return err
-			}
-		}
-
-		_ = mw.Close()
-
-		req.Header.Set("Content-Type", mw.FormDataContentType())
-		req.Body = io.NopCloser(&body)
-	}
+	req.Header.Add("Content-Type", "application/json")
 
 	resp, err := h.Client().Do(req)
 	if err != nil {
-		return fmt.Errorf("webhook: error when sending: %w", err)
+		return fmt.Errorf("hook send: %w", err)
 	}
 	return resp.Body.Close()
 }

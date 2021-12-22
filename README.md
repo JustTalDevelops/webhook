@@ -1,7 +1,7 @@
 # webhook
 
 webhook is a bare-bones package for working with Discord webhooks. This version is a fork of the original to change
-a few things to make it more useful for my own use.
+a few things to make it more useful for my own use. This implementation does not support attachments.
 
 ## Example
 
