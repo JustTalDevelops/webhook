@@ -1,3 +1,3 @@
-module github.com/Karitham/webhook
+module github.com/justtaldevelops/webhook
 
-go 1.15
+go 1.16

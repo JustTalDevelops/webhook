@@ -1,48 +1,14 @@
-# Webhook
+# webhook
 
-Webhook is a bare bone package for working with discord webhooks.
+webhook is a bare-bones package for working with Discord webhooks. This version is a fork of the original to change
+a few things to make it more useful for my own use.
 
 ## Example
 
-simple plain text
-
+Below is a simple example to send plain text to a webhook:
 ```go
-package main
-
-import "github.com/Karitham/webhook"
-
-const emojiURL = "https://cdn.discordapp.com/emojis/801874189526368256.gif"
-
-func main() {
-	wh := webhook.New("discord url here")
-
-	wh.With(&webhook.Webhook{
-		Username:  "Captain'Hook",
-		AvatarURL: emojiURL,
-		Content:   "This is the content of the message, it's plain text",
-	})
-
-	wh.Run()
-}
+webhook.New(hookURI).Send(webhook.Webhook{
+    Username:  "Captain'Hook",
+    Content:   "This is the content of the message, it's plain text",
+})
 ```
-
-with file as an attachement
-
-```go
-	resp, _ := http.Get(emojiURL)
-	defer resp.Body.Close()
-
-	wh.With(&webhook.Webhook{
-		Username:  "nanabongo",
-		AvatarURL: emojiURL,
-		Files: []Attachment{{
-				Body:     resp.Body,
-				Filename: "nanabongo.gif",
-			},
-		},
-	})
-
-	wh.Run()
-```
-
-To have the file embed itself send an image with the embed object with it's url being `attachment://<filename>` and attach to file as an attachment
