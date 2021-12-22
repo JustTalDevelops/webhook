@@ -1,6 +1,6 @@
 package webhook
 
-// Webhook is the webhook object sent to discord
+// Webhook is the webhook object sent to Discord in hook requests.
 type Webhook struct {
 	Username  string  `json:"username"`
 	AvatarURL string  `json:"avatar_url"`
