@@ -17,7 +17,7 @@ type Embed struct {
 	Timestamp   string  `json:"timestamp"`
 	Thumbnail   Image   `json:"thumbnail"`
 	Image       Image   `json:"image"`
-	URI         string  `json:"uri"`
+	URL         string  `json:"url"`
 	Fields      []Field `json:"fields"`
 	Color       int64   `json:"color"`
 }
@@ -44,5 +44,5 @@ type Footer struct {
 
 // Image is an image that can be used in the embed.
 type Image struct {
-	URI string `json:"uri"`
+	URL string `json:"url"`
 }

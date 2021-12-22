@@ -14,7 +14,7 @@ type Hook struct {
 	uri    string
 }
 
-// New returns a new hook with the designated URI.
+// New returns a new hook with the designated URL.
 func New(uri string) *Hook {
 	return &Hook{
 		uri:    uri,
